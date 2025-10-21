@@ -4,8 +4,8 @@ from validators import MxaDetectionValidator, MxaPoseValidator, MxaSegmentationV
 
 parser = argparse.ArgumentParser(description="Validate YOLOv11-ADHD models")
 parser.add_argument('--weights', type=str, required=True, help="Path to model weights (.pt)")
+parser.add_argument('--task', type=str, choices=['detect', 'seg', 'pose'], required=True, help="Task type")
 parser.add_argument('--device', type=str, choices=['mxa', 'cuda', 'cpu'], required=True, help="Device to validate on")
-parser.add_argument('--task', type=str, choices=['detect', 'seg', 'pose'], default='detect', help="Task type")
 parser.add_argument('--resolution', type=int, default=640, help="Input image resolution")
 
 args = parser.parse_args()

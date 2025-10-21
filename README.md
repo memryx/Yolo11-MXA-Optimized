@@ -1,6 +1,10 @@
-# YOLO11-ADHD
+# YOLO11 MXA-Optimized Retraining 
 
-This repo contains the code used to generate the MXA-optimized versions of YOLO11. Below we outline the methodology.
+This repo contains the code used to generate the MXA-optimized versions of YOLO11. 
+
+The pre-trained / compiled DFPs are availble on the [Model Explorer](https://developer.memryx.com/model_explorer/models.html).
+
+Below we outline the methodology.
 
 ## Setup
 

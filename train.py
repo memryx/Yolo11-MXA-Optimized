@@ -2,10 +2,10 @@ import argparse
 from ultralytics import YOLO
 
 parser = argparse.ArgumentParser(description="Train YOLOv11-ADHD models")
-parser.add_argument('--task', type=str, choices=['detect', 'seg', 'pose'], default='detect', help="Task type")
+parser.add_argument('--task', type=str, choices=['detect', 'seg', 'pose'], required=True, help="Task type")
+parser.add_argument('--size', type=str, choices=['n', 's', 'm'], required=True, help="Model size")
 parser.add_argument('--epochs', type=int, default=300, help="Number of training epochs")
 parser.add_argument('--resolution', type=int, default=640, help="Input image resolution")
-parser.add_argument('--size', type=str, choices=['n', 's', 'm'], default='n', help="Model size")
 
 args = parser.parse_args()
 
