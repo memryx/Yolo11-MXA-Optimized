@@ -1,8 +1,8 @@
-# YOLO11 MXA Optimized
+# YOLO11-ADHD
 
 This repo contains the code used to generate the MXA-optimized versions of YOLO11. Below we outline the methodology.
 
-## Setup 
+## Setup
 
 Create a python virtual environment, install `ultralytics==8.3.152` and `memryx`.
 
@@ -18,9 +18,13 @@ diff yolo11-pose.yaml yolo11-pose-adhd.yaml
 diff yolo11-seg.yaml yolo11-seg-adhd.yaml
 ```
 
-## Training
+## Train
 
-The `train.py` script shows how we trained. While there are many hyperparameters to tune, we found `epochs`, `resolution`, and the model architecture (`width`) had the most significant impact. Most hyperparameters were kept at their default value. All our training was done on an NVIDIA GeForce RTX4090.
+The `train.py` script shows how we trained. While there are many hyperparameters to tune, we found `epochs`, `resolution`, and the model architecture (`width`) had the most significant impact. Most hyperparameters were kept at their default value. If the dataset is not detected, it will be automatically downloaded which may take a while. For usage, run:
+
+```bash
+python train.py --help
+```
 
 We suspect some extra accuracy (~1%) can be squeezed out with further hyperparameter tuning.
 
@@ -30,7 +34,7 @@ We suspect some extra accuracy (~1%) can be squeezed out with further hyperparam
 yolo export model=[path to model checkpoint or yaml config] imgsz=[desired image size] format=onnx simplify=True
 ```
 
-## Compilation
+## Compile
 
 ```bash
 mx_nc -m [path to model .pt checkpoint] -e hard -j max --autocrop
@@ -38,10 +42,15 @@ mx_nc -m [path to model .pt checkpoint] -e hard -j max --autocrop
 
 Omit `-e hard -j max` for faster iteration. If compiling default model (with C2PSA block), also include `--extensions Yolov10`.
 
-## Validation
+## Validate
 
-The `val.py` script shows how we validated on CUDA and on our MXAs. For the latter case, we define custom validators in `validators.py`. 
+The `val.py` script shows how we validated on CUDA and on our MXAs. For the latter case, we define custom validators in `validators.py`.
 
-Note, these validators require the MemryX SDK, the exact version of ultralytics above, and the `.pt`, the exported `.onnx`, and the compiled `.dfp` versions of the model.
+> [!IMPORTANT]
+> Note, these validators require the MemryX SDK, the exact version of ultralytics above, and the `.pt`, the exported `.onnx`, and the compiled `.dfp` versions of the model.
 
-Again, we have kept almost all hyperparameters default to ensure a fair comparison. The primary metric we have optimized for is $`mAP_{50:95}^{val}`$ bounding box for detection, keypoints for pose estimation, and mask for segmentation.
+Again, we have kept almost all hyperparameters default to ensure a fair comparison. The primary metric we have optimized for is $`mAP_{50:95}^{val}`$ bounding box for detection, keypoints for pose estimation, and mask for segmentation. For usage, run:
+
+```bash
+python val.py --help
+```

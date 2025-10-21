@@ -1,20 +1,24 @@
+import argparse
 from ultralytics import YOLO
 
-task = 'det'        # 'det', 'seg', or 'pose'
-epochs = 2          # default
-resolution = 320    # default
+parser = argparse.ArgumentParser(description="Train YOLOv11-ADHD models")
+parser.add_argument('--task', type=str, choices=['detect', 'seg', 'pose'], default='detect', help="Task type")
+parser.add_argument('--epochs', type=int, default=300, help="Number of training epochs")
+parser.add_argument('--resolution', type=int, default=640, help="Input image resolution")
+parser.add_argument('--size', type=str, choices=['n', 's', 'm'], default='n', help="Model size")
 
-for size in 'n':
-    print(f"\nTraining YOLOv11{size} for {task} task for {epochs} epochs at {resolution}x{resolution} resolution\n")
+args = parser.parse_args()
 
-    model = YOLO(f"./yolo11{size}{'-' + task if task != 'det' else ''}-adhd.yaml")
-    model.train(
-        epochs=epochs,
-        imgsz=resolution,
-        pretrained=False,
-        data="coco.yaml" if task != 'pose' else "coco-pose.yaml",
-        batch=0.999, # % of GPU memory to use (RTX 4090)
-        name=f"{size}-{task}-adhd-{epochs}-{resolution}",
-        project=f"runs/{task}"
-        # See https://docs.ultralytics.com/modes/train/#train-settings for more
-    )
+print(f"\nTraining YOLOv11{args.size} for {args.task} task for {args.epochs} epochs at {args.resolution}x{args.resolution} resolution\n")
+
+model = YOLO(f"./yolo11{args.size}{'-' + args.task if args.task != 'detect' else ''}-adhd.yaml")
+model.train(
+    epochs=args.epochs,
+    imgsz=args.resolution,
+    pretrained=False,
+    data="coco.yaml" if args.task != 'pose' else "coco-pose.yaml",
+    batch=0.999, # % of GPU memory to use
+    name=f"{args.size}-{args.task}-adhd-{args.epochs}-{args.resolution}",
+    project=f"runs/{args.task}"
+    # See https://docs.ultralytics.com/modes/train/#train-settings for more
+)
